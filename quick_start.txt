@@ -1,0 +1,178 @@
+================================================================================
+ARK: SURVIVAL EVOLVED WEB MANAGER - QUICK START GUIDE
+================================================================================
+
+INSTALLATION CHECKLIST:
+-----------------------
+☐ Run INSTALL.bat as Administrator
+☐ Copy all files to C:\WebServer\ark-manager\
+☐ Edit config.php with your settings
+☐ Move batch files to C:\ARKServers\batch\
+☐ Restart Apache
+☐ Access http://localhost/ark-manager
+
+IMPORTANT CONFIGURATION:
+------------------------
+
+1. EDIT config.php:
+   - Line 15: ARK_ROOT path
+   - Line 20-24: Batch file paths
+   - Line 27-59: Server configurations (ports, IPs, save dirs)
+   - Line 62-66: Player Steam IDs and names
+
+2. VERIFY PATHS:
+   All paths must use DOUBLE BACKSLASHES:
+   ✓ CORRECT: C:\\ARKServers\\ARKASE
+   ✗ WRONG:   C:\ARKServers\ARKASE
+
+3. RCON PASSWORD:
+   The manager reads ServerAdminPassword from GameUserSettings.ini
+   No need to enter it separately!
+
+4. BATCH FILES:
+   Move your startup batch files to:
+   C:\ARKServers\batch\
+   
+   Example:
+   - start_extinction.bat
+   - start_fjordur.bat
+
+QUICK REFERENCE:
+----------------
+
+SERVER CONTROL:
+• Start Server    → Runs your batch file
+• Stop Server     → SaveWorld + DoExit (clean shutdown)
+• Restart Server  → Stop + Wait + Start
+• Force Kill      → Terminates process (use only if frozen)
+
+RCON COMMANDS:
+• SaveWorld              → Save current game state
+• ListPlayers            → Show connected players
+• DestroyWildDinos       → Respawn all wild dinos
+• Broadcast <msg>        → Announce to all players
+• ServerChat <msg>       → Send chat message
+• SetTimeOfDay HH:MM:SS  → Change time (e.g., 12:00:00)
+• DoExit                 → Graceful shutdown
+• KickPlayer <SteamID>   → Kick a player
+• BanPlayer <SteamID>    → Ban a player
+
+CHARACTER TRANSFER:
+1. Stop BOTH servers first
+2. Select source and target
+3. Check characters to transfer
+4. Click Transfer (backups auto-created)
+5. Start destination server
+
+FILE BROWSER:
+• Navigate like Windows Explorer
+• Edit .ini, .txt, .log, .cfg, .bat files
+• Backups created before saving
+• Delete creates backup in .deleted folder
+
+TROUBLESHOOTING:
+----------------
+
+Problem: RCON connection failed
+Fix:     - Check server is running
+         - Verify RCON port in config.php
+         - Check ServerAdminPassword in INI
+
+Problem: Can't start server
+Fix:     - Verify batch file path
+         - Check ARK executable exists
+         - Ensure no server already running
+
+Problem: Permission denied
+Fix:     - Run Apache as LocalSystem (default)
+         - Check folder permissions
+         - Use INSTALL.bat to set permissions
+
+Problem: exec() disabled
+Fix:     - Edit php.ini
+         - Remove exec, shell_exec from disable_functions
+         - Restart Apache
+
+Problem: Character transfer failed
+Fix:     - Stop both servers
+         - Check save directories exist
+         - Verify .arkprofile files exist
+         - Check target directory permissions
+
+FINDING STEAM IDS:
+------------------
+Look in your save directories:
+C:\ARKServers\ARKASE\ShooterGame\Saved\ExtinctionSave\
+
+Files like: 76561198012345678.arkprofile
+The number is the Steam ID!
+
+Add to config.php:
+$PLAYERS = [
+    '76561198012345678' => 'PlayerName1',
+];
+
+SECURITY TIPS:
+--------------
+✓ Use strong .htpasswd password
+✓ Only give access to trusted admins
+✓ Review logs regularly (logs/manager.log)
+✓ Backup INI files before editing
+✓ Test on backup server first
+✓ Consider using HTTPS in production
+
+FILE LOCATIONS:
+---------------
+Web Files:        C:\WebServer\ark-manager\
+ARK Server:       C:\ARKServers\ARKASE\
+Config Files:     C:\ARKServers\ARKASE\ShooterGame\Saved\Config\WindowsServer\
+Save Files:       C:\ARKServers\ARKASE\ShooterGame\Saved\[MapName]Save\
+Batch Files:      C:\ARKServers\batch\
+Manager Logs:     C:\WebServer\ark-manager\logs\
+Server Logs:      C:\ARKServers\ARKASE\ShooterGame\Saved\Logs\
+
+COMMON TASKS:
+-------------
+
+Task: Change server settings
+1. Go to INI Editor
+2. Select GameUserSettings.ini
+3. Edit settings
+4. Save (backup created)
+5. Restart server
+
+Task: Wipe wild dinos
+1. Go to RCON
+2. Type: DestroyWildDinos
+3. Wait for message
+
+Task: Broadcast message
+1. Go to RCON
+2. Type: Broadcast Your message here
+3. All players will see it
+
+Task: Emergency shutdown
+1. Go to Server Control
+2. Click "Force Kill" if server frozen
+3. Or use Stop Server for clean shutdown
+
+Task: View recent activity
+1. Go to Log Viewer
+2. Select "Manager Actions Log"
+3. See who did what and when
+
+MAINTENANCE:
+------------
+Daily:    Check server status
+Weekly:   Review logs for errors
+Monthly:  Backup INI files
+Before Updates: Full backup of ARK directory
+
+SUPPORT:
+--------
+Check README.md for detailed documentation
+Review logs at: C:\WebServer\ark-manager\logs\manager.log
+
+================================================================================
+ENJOY YOUR ARK SERVER MANAGEMENT!
+================================================================================

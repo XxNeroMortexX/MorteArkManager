@@ -1,0 +1,30 @@
+[2025-11-12 16:36:47] [146.75.175.33] CUSTOM_COMMAND - netstat -ano | findstr :7779
+[2025-11-12 16:37:32] [146.75.175.33] CUSTOM_COMMAND - netstat -ano | findstr :7789
+[2025-11-12 16:38:07] [146.75.175.33] CUSTOM_COMMAND - netstat -an
+[2025-11-12 16:40:36] [146.75.175.33] RCON_COMMAND - ListPlayers on Ark_Morte_Extinction
+[2025-11-12 16:40:52] [146.75.175.33] RCON_COMMAND - GetChat on Ark_Morte_Extinction
+[2025-11-12 16:41:20] [146.75.175.33] RCON_COMMAND - ListPlayers on Ark_Morte_Extinction
+[2025-11-12 18:19:59] [76.155.210.90] RCON_COMMAND - ListPlayers on Ark_Morte_Extinction
+[2025-11-12 18:20:03] [76.155.210.90] RCON_COMMAND - ListPlayers on Ark_Morte_Extinction
+[2025-11-12 19:27:54] [76.155.210.90] CUSTOM_COMMAND - tasklist
+[2025-11-12 20:00:22] [unknown@76.155.210.90] RCON_COMMAND - ListPlayers on Ark_Morte_Extinction
+[2025-11-12 20:02:14] [unknown@76.155.210.90] CUSTOM_COMMAND - systeminfo | findstr /C:"Total Physical Memory" /C:"Available Physical Memory"
+[2025-11-12 20:02:28] [unknown@76.155.210.90] CUSTOM_COMMAND - tasklist /FI "IMAGENAME eq ShooterGameServer.exe"
+[2025-11-12 20:02:42] [unknown@76.155.210.90] CUSTOM_COMMAND - ipconfig
+[2025-11-12 22:28:35] [unknown@76.155.210.90] CUSTOM_COMMAND - cd /d c:\ dir
+[2025-11-12 22:28:48] [unknown@76.155.210.90] CUSTOM_COMMAND - cd /d c:\
+[2025-11-12 22:28:58] [unknown@76.155.210.90] CUSTOM_COMMAND - dir
+[2025-11-12 22:29:18] [unknown@76.155.210.90] CUSTOM_COMMAND - ../../../dir
+[2025-11-12 22:29:26] [unknown@76.155.210.90] CUSTOM_COMMAND - cd ../../../dir
+[2025-11-12 22:29:30] [unknown@76.155.210.90] CUSTOM_COMMAND - cd ../../../
+[2025-11-12 22:35:55] [unknown@76.155.210.90] RCON_COMMAND - ListPlayers on Ark_Morte_Extinction
+[2025-11-13 02:00:15] [Admin@76.155.210.90] RCON_COMMAND - ListPlayers on Ark_Morte_Extinction
+[2025-11-13 02:00:40] [Admin@76.155.210.90] RCON_COMMAND - KickPlayer 76561198110989933 on Ark_Morte_Extinction
+[2025-11-13 02:09:33] [Admin@76.155.210.90] RCON_COMMAND - ListPlayers on Ark_Morte_Extinction
+[2025-11-13 03:56:25] [Admin@76.155.210.90] RCON_COMMAND - ListPlayers on Ark_Morte_Extinction
+[2025-11-13 04:03:20] [Admin@76.155.210.90] RCON_COMMAND - DestroyWildDinos on Ark_Morte_Extinction
+[2025-11-13 04:06:14] [Admin@76.155.210.90] RCON_COMMAND - listplayers on Ark_Morte_Extinction
+[2025-11-13 04:13:06] [Admin@76.155.210.90] RCON_COMMAND - ListPlayers on Ark_Morte_Extinction
+[2025-11-13 04:13:12] [Admin@76.155.210.90] RCON_COMMAND - GetChat on Ark_Morte_Extinction
+[2025-11-13 04:14:29] [Admin@76.155.210.90] RCON_COMMAND - SetTimeOfDay 12:00:00 on Ark_Morte_Extinction
+[2025-11-13 04:14:35] [Admin@76.155.210.90] RCON_COMMAND - SetTimeOfDay 00:00:00 on Ark_Morte_Extinction

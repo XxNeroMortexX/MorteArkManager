@@ -1,4 +1,4 @@
-# ARK: Survival Evolved Web Manager
+# ARK: Survival Evolved Web Manager 
 
 A comprehensive PHP-based web management panel for ARK: Survival Evolved dedicated servers running on Windows.
 
@@ -93,7 +93,7 @@ Edit `config.php` and update these values:
 define('ARK_ROOT', 'C:\\ARKServers\\ARKASE');
 
 // Update batch file paths
-define('BATCH_DIR', 'C:\\ARKServers\\batch');
+define('BATCH_DIR', 'C:\\ARKServers');
 
 // Add your Steam IDs and player names
 $PLAYERS = [
@@ -104,10 +104,10 @@ $PLAYERS = [
 
 ### Step 5: Create Batch Files Directory
 
-Create `C:\ARKServers\batch\` and move your server batch files there:
+Create `C:\ARKServers` and move your server batch files there:
 
 ```
-C:\ARKServers\batch\
+C:\ARKServers\
 ├── start_extinction.bat
 └── start_fjordur.bat
 ```

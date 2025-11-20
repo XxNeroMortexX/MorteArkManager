@@ -73,7 +73,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     
     // Save the updated config
     if (file_put_contents($configFile, $originalContent)) {
-        logAction('CONFIG_UPDATE', 'Updated: ' . implode(', ', $updates));
+        logAction(__FILE__, __LINE__, 'CONFIG_UPDATE', 'Updated: ' . implode(', ', $updates));
         $_SESSION['success'] = 'Configuration saved successfully! Backup created at: ' . basename($backupPath);
     } else {
         $_SESSION['error'] = 'Failed to save configuration';
@@ -108,7 +108,7 @@ include '../includes/header.php';
                        name="ark_root" 
                        class="form-control" 
                        value="<?php echo htmlspecialchars(str_replace('\\\\', '\\', ARK_ROOT)); ?>"
-                       placeholder="H:\ARKServers\ARKASE">
+                       placeholder="C:\ARKServers\ARKASE">
                 <small style="color: #999;">Full path to your ARK server installation</small>
             </div>
         </div>
@@ -122,7 +122,7 @@ include '../includes/header.php';
                        name="backup_dir" 
                        class="form-control" 
                        value="<?php echo htmlspecialchars(BACKUP_DIR); ?>"
-                       placeholder="H:\ARKServers\Backups">
+                       placeholder="C:\ARKServers\Backups">
                 <small style="color: #999;">Where backup files are stored</small>
             </div>
             

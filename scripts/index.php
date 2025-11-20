@@ -15,28 +15,24 @@ if (!hasPermission('view_scripts')) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
     if ($_POST['action'] === 'run_script') {
         $scriptKey = $_POST['script'] ?? '';
+		$scriptPath = $BATCH_FILES[$scriptKey];
         
         if (!isset($BATCH_FILES[$scriptKey])) {
-            jsonResponse(['success' => false, 'error' => 'Invalid script']);
-        }
-        
-        $scriptPath = $BATCH_FILES[$scriptKey];
-        
-        if (!file_exists($scriptPath)) {
-            jsonResponse(['success' => false, 'error' => 'Script file not found']);
-        }
-        
-        // Execute the batch file
-        $command = 'start "" "' . $scriptPath . '"';
-        pclose(popen($command, 'r'));
-        
-        logAction('SCRIPT_RUN', $scriptPath);
-        
-        jsonResponse([
-            'success' => true,
-            'message' => 'Script execution started',
-            'script' => basename($scriptPath)
-        ]);
+			$message = '❌ Invalid script key - ' . $scriptKey;
+			logAction(__FILE__, __LINE__, 'SCRIPT_RUN', 'Results: ' . $message);
+		} elseif (!file_exists($scriptPath)) {
+			$message = '❌ Script file not found - ' . $scriptPath;
+			logAction(__FILE__, __LINE__, 'SCRIPT_RUN', 'Results: ' . $message);
+		} else {
+			$message = '✅ Script execution started: ' . htmlspecialchars(basename($scriptPath));
+			
+		  //Execute the batch file
+		  //$command = 'start "" "' . $scriptPath . '"';
+		  //pclose(popen($command, 'r'));
+		    logAction(__FILE__, __LINE__, 'SCRIPT_RUN', $scriptPath);
+		    logAction(__FILE__, __LINE__, 'SCRIPT_RUN', 'Results: ' . $message);
+		}
+                		
     }
     
     if ($_POST['action'] === 'run_custom') {
@@ -52,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         //exec($command . ' 2>&1', $output, $returnCode);
 		safe_exec($command . ' 2>&1', $output, $returnCode);
         
-        logAction('CUSTOM_COMMAND', $command);
+        logAction(__FILE__, __LINE__, 'CUSTOM_COMMAND', $command);
         
         jsonResponse([
             'success' => $returnCode === 0,
@@ -164,14 +160,15 @@ include '../includes/header.php';
             if (file_exists($logFile)) {
                 $logs = tailFile($logFile, 20);
                 $scriptLogs = array_filter($logs, function($line) {
-                    return strpos($line, 'SCRIPT_RUN') !== false || 
-                           strpos($line, 'CUSTOM_COMMAND') !== false;
+                    return strpos($line, 'CUSTOM_COMMAND') !== false || 
+                           strpos($line, 'SCRIPT_RUN') !== false;
                 });
                 
                 if (!empty($scriptLogs)):
                     foreach (array_slice($scriptLogs, -10) as $log):
             ?>
-                    <div class="log-entry"><?php echo htmlspecialchars($log); ?></div>
+                    <div class="result log-entry"><?php echo ($log); ?></div>
+                    <!-- <div class="result log-entry"><?php echo htmlspecialchars($log); ?></div> -->
             <?php
                     endforeach;
                 else:

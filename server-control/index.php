@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $command = 'start "" "' . $batchFile . '"';
             pclose(popen($command, 'r'));
             
-            logAction('SERVER_START', $serverInfo['name']);
+            logAction(__FILE__, __LINE__, 'SERVER_START', $serverInfo['name']);
             $_SESSION['success'] = 'Server start command sent. Please wait 30-60 seconds for startup.';
             break;
             
@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 );
                 
                 if ($result['success']) {
-                    logAction('SERVER_STOP', $serverInfo['name']);
+                    logAction(__FILE__, __LINE__, 'SERVER_STOP', $serverInfo['name']);
                     $_SESSION['success'] = 'Server shutdown command sent. World saved.';
                 } else {
                     $_SESSION['error'] = 'Failed to send shutdown command: ' . $result['error'];
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             
             if ($returnCode === 0) {
-                logAction('SERVER_KILL', $serverInfo['name']);
+                logAction(__FILE__, __LINE__, 'SERVER_KILL', $serverInfo['name']);
                 $_SESSION['success'] = 'Server process forcefully terminated';
             } else {
                 $_SESSION['error'] = 'Failed to kill process: ' . implode("\n", $output);
@@ -124,7 +124,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $command = 'start "" "' . $batchFile . '"';
                     pclose(popen($command, 'r'));
                     
-                    logAction('SERVER_RESTART', $serverInfo['name']);
+                    logAction(__FILE__, __LINE__, 'SERVER_RESTART', $serverInfo['name']);
                     $_SESSION['success'] = 'Server restarting. Please wait 30-60 seconds.';
                 }
             } else {
@@ -229,46 +229,59 @@ include '../includes/header.php';
 
         <div class="control-buttons">
             <?php if ($isRunning): ?>
+			
+				<?php if (hasPermission('stop_servers')): ?>
                 <form method="POST" style="display: inline;" onsubmit="return confirm('Stop the server? World will be saved first.');">
                     <input type="hidden" name="action" value="stop">
                     <input type="hidden" name="server" value="<?php echo htmlspecialchars($selectedServer); ?>">
                     <button type="submit" class="btn btn-warning">⏹️ Stop Server</button>
                 </form>
+				<?php endif; ?>
                 
+				<?php if (hasPermission('restart_servers')): ?>
                 <form method="POST" style="display: inline;" onsubmit="return confirm('Restart the server? World will be saved first.');">
                     <input type="hidden" name="action" value="restart">
                     <input type="hidden" name="server" value="<?php echo htmlspecialchars($selectedServer); ?>">
                     <button type="submit" class="btn btn-info">🔄 Restart Server</button>
                 </form>
-                
+				<?php endif; ?>
+				
+                <?php if (hasPermission('kill_servers')): ?>
                 <form method="POST" style="display: inline;" onsubmit="return confirm('FORCE KILL the server process? This may cause data loss!');">
                     <input type="hidden" name="action" value="kill">
                     <input type="hidden" name="server" value="<?php echo htmlspecialchars($selectedServer); ?>">
                     <button type="submit" class="btn btn-danger">💀 Force Kill</button>
                 </form>
+				<?php endif; ?>
+				
             <?php else: ?>
+				<?php if (hasPermission('start_servers')): ?>
                 <form method="POST" style="display: inline;">
                     <input type="hidden" name="action" value="start">
                     <input type="hidden" name="server" value="<?php echo htmlspecialchars($selectedServer); ?>">
                     <button type="submit" class="btn btn-success">▶️ Start Server</button>
                 </form>
+				<?php endif; ?>
             <?php endif; ?>
         </div>
-
-        <div class="batch-file-info">
-            <h3>📄 Batch File</h3>
-            <?php 
-            $batchFile = $BATCH_FILES[$serverInfo['batch_file']] ?? null;
-            if ($batchFile && file_exists($batchFile)):
-            ?>
-                <p><strong>File:</strong> <?php echo htmlspecialchars($batchFile); ?></p>
-                <a href="../scripts/?run=<?php echo urlencode($serverInfo['batch_file']); ?>" class="btn btn-secondary">
-                    View/Run Batch File
-                </a>
-            <?php else: ?>
-                <p class="text-error">❌ Batch file not found</p>
-            <?php endif; ?>
-        </div>
+		<?php if (hasPermission('start_servers')): ?>
+		<div class="batch-file-info">
+			<h3>📄 Batch File</h3>
+			<?php 
+			$batchFile = $BATCH_FILES[$serverInfo['batch_file']] ?? null;
+			if ($batchFile && file_exists($batchFile)):
+			?>
+				<p><strong>File:</strong> <?php echo htmlspecialchars($batchFile); ?></p>
+				<form method="POST" action="../scripts/index.php" style="display:inline;">
+					<input type="hidden" name="action" value="run_script">
+					<input type="hidden" name="script" value="<?php echo htmlspecialchars($serverInfo['batch_file']); ?>">
+					<button type="submit" class="btn btn-secondary">View/Run Batch File</button>
+				</form>
+			<?php else: ?>
+				<p class="text-error">❌ Batch file not found</p>
+			<?php endif; ?>
+		</div>
+	<?php endif; ?>
     </div>
 </div>
 

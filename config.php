@@ -367,8 +367,8 @@ function getServerWindowTitle($serverKey) {
     //exec($command, $output);
 	safe_exec($command, $output);
     
-    // Debug log
-    logAction('DEBUG_TITLE', 'WMIC Output Lines: ' . count($output));
+    // Debug log - logAction(basename($_SERVER['PHP_SELF']),
+    logAction(__FILE__, __LINE__, 'DEBUG_TITLE', 'WMIC Output Lines:' . "\r\n" . implode("\r\n", cleanArray($output, 2)));
     
     $foundTitle = null;
     $inHeader = true;
@@ -402,7 +402,7 @@ function getServerWindowTitle($serverKey) {
                 $foundTitle = substr($foundTitle, 0, 200) . '...';
             }
             
-            logAction('DEBUG_TITLE', "Found title for $searchTerm: " . substr($foundTitle, 0, 100));
+            logAction(__FILE__, __LINE__, 'DEBUG_TITLE', "Found title for $searchTerm: " . substr($foundTitle, 0, 100));
             break;
         }
     }
@@ -519,7 +519,7 @@ function isEditableFile($filename) {
 /**
  * Log action
  */
-function logAction($action, $details = '') {
+function logAction($file, $line, $action, $details = '') {
     $logFile = __DIR__ . '/logs/manager.log';
     $logDir = dirname($logFile);
     
@@ -530,7 +530,7 @@ function logAction($action, $details = '') {
     $timestamp = date('Y-m-d H:i:s');
     $ip = $_SERVER['REMOTE_ADDR'] ?? 'CLI';
     $user = $_SERVER['PHP_AUTH_USER'] ?? 'unknown';
-    $entry = "[$timestamp] [$user@$ip] $action";
+    $entry = "[$timestamp] [$user@$ip] [$file] [Line $line:] $action";
     
     if ($details) {
         $entry .= " - $details";
@@ -539,6 +539,16 @@ function logAction($action, $details = '') {
     $entry .= "\n";
     
     file_put_contents($logFile, $entry, FILE_APPEND | LOCK_EX);
+}
+
+function cleanArray(array $input, int $tabCount = 2): array {
+    $indent = str_repeat("\t", max(0, $tabCount)); // Generate N tabs safely
+
+    return array_values(array_filter(array_map(function($line) use ($indent) {
+        // Normalize whitespace and indent
+        $line = preg_replace('/[\s\xA0]+/u', ' ', trim($line));
+        return $line !== '' ? $indent . $line : null;
+    }, $input)));
 }
 
 require_once 'Permissions.php';

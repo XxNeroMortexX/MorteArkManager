@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $newContent = implode("\n", $newLines);
     
     if (file_put_contents($filepath, $newContent) !== false) {
-        logAction('INI_EDIT', "Edited $file - $updated key(s) updated");
+        logAction(__FILE__, __LINE__, 'INI_EDIT', "Edited $file - $updated key(s) updated");
         $_SESSION['success'] = "Successfully saved $file - $updated setting(s) updated (Backup: " . basename($backupPath) . ")";
     } else {
         $_SESSION['error'] = "Failed to save $file";
@@ -125,7 +125,7 @@ $visibleKeys = $INI_VISIBLE_KEYS[$role][$selectedFile] ?? [];
 
 // Parse INI file
 $parsedIni = [];
-$currentSection = 'General';
+$currentSection = '';
 
 if (file_exists($filepath)) {
     $lines = file($filepath, FILE_IGNORE_NEW_LINES);

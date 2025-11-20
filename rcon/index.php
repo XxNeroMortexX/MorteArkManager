@@ -49,7 +49,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action'])) {
         );
         
         if ($result['success']) {
-            logAction('RCON_COMMAND', $command . ' on ' . $serverInfo['name']);
+            logAction(__FILE__, __LINE__, 'RCON_COMMAND', $command . ' on ' . $serverInfo['name']);
         }
         
         echo json_encode($result);

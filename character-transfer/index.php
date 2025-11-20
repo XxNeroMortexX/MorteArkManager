@@ -100,7 +100,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
         $message .= ". Errors: " . implode(', ', $errors);
     }
     
-    logAction('CHARACTER_TRANSFER', $message);
+    logAction(__FILE__, __LINE__, 'CHARACTER_TRANSFER', $message);
     
     if ($transferred > 0) {
         $_SESSION['success'] = $message;

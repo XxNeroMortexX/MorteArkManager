@@ -60,7 +60,7 @@
 				<a href="<?php echo getBaseUrl(); ?>includes/logout.php" 
 				   onclick="return confirm('Logout of ARK Manager?');" 
 				   style="color: #ff9800;">
-					🚪 Logout
+					🚪 Logout <?php echo '( ' . getCurrentUserRole() . ' )' ?>
 				</a>
 			</li>
             </ul>

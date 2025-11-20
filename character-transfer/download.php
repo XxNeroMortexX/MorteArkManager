@@ -36,7 +36,7 @@ if (!in_array($ext, ['arkprofile', 'arktribe'])) {
 }
 
 // Log the download
-logAction('CHARACTER_DOWNLOAD', basename($filePath) . ' from ' . $serverInfo['map']);
+logAction(__FILE__, __LINE__, 'CHARACTER_DOWNLOAD', basename($filePath) . ' from ' . $serverInfo['map']);
 
 // Send file
 header('Content-Type: application/octet-stream');

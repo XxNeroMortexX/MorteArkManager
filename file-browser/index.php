@@ -34,7 +34,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         
         if (file_put_contents($filepath, $content) !== false) {
-            logAction('FILE_EDIT', $filepath);
+            logAction(__FILE__, __LINE__, 'FILE_EDIT', $filepath);
             jsonResponse(['success' => true, 'message' => 'File saved successfully']);
         } else {
             jsonResponse(['success' => false, 'error' => 'Failed to save file']);
@@ -60,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $backupPath = createBackup($filepath, 'deleted');
         
         if ($backupPath && unlink($filepath)) {
-            logAction('FILE_DELETE', $filepath);
+            logAction(__FILE__, __LINE__, 'FILE_DELETE', $filepath);
             jsonResponse(['success' => true, 'message' => 'File deleted (backup created)']);
         } else {
             jsonResponse(['success' => false, 'error' => 'Failed to delete file']);

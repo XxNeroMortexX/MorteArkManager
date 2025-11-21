@@ -395,7 +395,8 @@ View real-time status of all servers with quick action buttons for common tasks.
    - **DestroyWildDinos** - Respawn all wild dinosaurs
    - **Broadcast \<message\>** - Server-wide announcement
    - **SetTimeOfDay HH:MM:SS** - Change in-game time
-3. View command output in real-time
+3. Kick players using the dynamic player list dropdown (auto-populated from online players)
+4. View command output in real-time
 
 ### Character Transfer
 1. **Stop both** source and target servers
@@ -592,9 +593,18 @@ View in real-time through the **Log Viewer** with auto-refresh and search capabi
 - ✅ Monitor for suspicious activity in logs
 - ✅ Test configuration changes on a backup server first
 
-### Role-Based Access
-- **Admin Role** - Full access to all features including Manager Settings
-- **Moderator Role** - Access to server control and monitoring, limited configuration changes
+### Role-Based Access Control
+* **Flexible Permission System** - Create unlimited custom roles with granular permissions
+* **Pre-configured Roles:**
+  * **Admin** - Full access to all features including Manager Settings
+  * **Moderator** - Server control, monitoring, RCON access, player management
+  * **Player** - Dashboard view, character transfers, and log access
+* **Customizable** - Define your own roles (e.g., "Builder", "Community Manager", "Trial Mod") with any combination of 25+ available permissions including:
+  * Page access (Dashboard, RCON, INI Editor, File Browser, etc.)
+  * Server control (Start, Stop, Restart, Kill processes)
+  * RCON capabilities (Execute commands, dangerous commands, kick players)
+  * File management (Edit, delete, read-only access)
+  * Configuration editing (Full or limited INI editing)
 
 ## ⚡ Performance Tips
 

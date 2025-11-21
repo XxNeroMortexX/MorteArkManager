@@ -40,6 +40,7 @@ $USER_ROLE_MAPPING = [
  * RCON:
  * - execute_rcon: Can execute RCON commands
  * - execute_rcon_dangerous: Can execute dangerous commands (DoExit, kick, ban)
+ * - execute_rcon_kick_players: Can kick players via dropdown (view and use kick player interface)
  * 
  * Character Transfer:
  * - transfer_characters: Can transfer characters between servers

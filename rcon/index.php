@@ -114,7 +114,7 @@ include '../includes/header.php';
             <h3>Quick Commands:</h3>
             <div class="command-buttons">
                 <?php
-                global $RCON_QUICK_COMMANDS;
+                global $RCON_QUICK_COMMANDS, $PLAYERS;
                 if (hasPermission('execute_rcon')):
                     foreach ($RCON_QUICK_COMMANDS as $label => $command):
 						if (hasAccess('rcon_quick_permissions', $label)):
@@ -129,10 +129,25 @@ include '../includes/header.php';
                         <?php echo htmlspecialchars($label); ?>
                     </button>
                 <?php
-					endif;
+						endif;
                     endforeach;
-                endif;
-                ?>
+        
+						// Add Kick Player dropdown if user has permission
+						if (hasPermission('execute_rcon_kick_players') || hasPermission('all')):
+
+				?>
+						<div style="display: inline-block; margin-left: 10px;">
+							<select id="kickPlayerSelect" class="form-control form-control-sm" style="display: inline-block; width: auto;">
+								<option value="">-- Select Player to Kick --</option>
+							</select>
+							<button class="btn btn-sm btn-warning" onclick="kickSelectedPlayer()">Kick Player</button>
+							<button class="btn btn-sm btn-secondary" onclick="refreshPlayerList()">Refresh List</button>
+						</div>
+				<?php
+						endif;
+				
+				endif;
+				?>
             </div>
         </div>
 
@@ -320,7 +335,101 @@ document.getElementById('commandInput').addEventListener('keydown', function(e) 
         }
     }
 });
+
 <?php endif; ?>
+
+// Store online players
+let onlinePlayers = [];
+
+// Parse ListPlayers response and populate dropdown
+function parsePlayerList(response) {
+    onlinePlayers = [];
+    
+    // ARK returns players in format: "0. PlayerName, SteamID 1. PlayerName2, SteamID2"
+    // Split by the numbered pattern
+    const playerMatches = response.matchAll(/(\d+)\.\s*(.+?),\s*(\d+)/g);
+    
+    for (let match of playerMatches) {
+        const playerName = match[2].trim();
+        const steamId = match[3].trim();
+        onlinePlayers.push({ name: playerName, steamId: steamId });
+    }
+    
+    updateKickDropdown();
+}
+
+// Update the kick player dropdown
+function updateKickDropdown() {
+    const select = document.getElementById('kickPlayerSelect');
+    if (!select) return;
+    
+    select.innerHTML = '<option value="">-- Select Player to Kick --</option>';
+    
+    for (let player of onlinePlayers) {
+        const option = document.createElement('option');
+        option.value = player.steamId;
+        option.textContent = player.name + ' (' + player.steamId + ')';
+        select.appendChild(option);
+    }
+    
+    addConsoleOutput('Player list refreshed: ' + onlinePlayers.length + ' players online', 'response');
+}
+
+// Refresh player list
+async function refreshPlayerList() {
+    addConsoleOutput('> ListPlayers', 'command');
+    
+    try {
+        const formData = new FormData();
+        formData.append('action', 'execute');
+        formData.append('server', serverKey);
+        formData.append('command', 'ListPlayers');
+        
+        const response = await fetch('', {
+            method: 'POST',
+            body: formData
+        });
+        
+        const result = await response.json();
+        
+        if (result.success) {
+            const responseText = result.response || '(No response)';
+            addConsoleOutput(responseText, 'response');
+            parsePlayerList(responseText);
+        } else {
+            addConsoleOutput('Error: ' + result.error, 'error');
+        }
+    } catch (error) {
+        addConsoleOutput('Request failed: ' + error.message, 'error');
+    }
+}
+
+// Kick selected player
+async function kickSelectedPlayer() {
+    const select = document.getElementById('kickPlayerSelect');
+    const steamId = select.value;
+    
+    if (!steamId) {
+        alert('Please select a player to kick');
+        return;
+    }
+    
+    const playerName = select.options[select.selectedIndex].text;
+    
+    if (!confirm('Kick player: ' + playerName + '?\n\nThis will disconnect them from the server.')) {
+        return;
+    }
+    
+    const command = 'KickPlayer ' + steamId;
+    executeQuickCommand(command, true);
+}
+
+// Auto-refresh player list on page load
+document.addEventListener('DOMContentLoaded', function() {
+    if (document.getElementById('kickPlayerSelect')) {
+        refreshPlayerList();
+    }
+});
 
 function escapeHtml(text) {
     const div = document.createElement('div');

@@ -1,178 +1,865 @@
 ================================================================================
-ARK: SURVIVAL EVOLVED WEB MANAGER - QUICK START GUIDE
+          🦖 MORTEARKMANAGER v2.0 - QUICK START GUIDE
+       ARK: Survival Evolved Web Management Panel
 ================================================================================
 
 INSTALLATION CHECKLIST:
 -----------------------
-☐ Run INSTALL.bat as Administrator
-☐ Copy all files to H:\ark-manager\
-☐ Edit config.php with your settings
-☐ Move batch files to H:\ARKServers\
-☐ Restart Apache
+☐ Run install.bat as Administrator
+☐ Copy all PHP files to H:\ark-manager\
+☐ Edit config.php with your server settings
+☐ Configure Apache httpd.conf
+☐ Move batch files to your batch directory
+☐ Restart Apache service
 ☐ Access http://localhost/ark-manager
 
-IMPORTANT CONFIGURATION:
-------------------------
+================================================================================
+IMPORTANT CONFIGURATION
+================================================================================
 
 1. EDIT config.php:
-   - Line 15: ARK_ROOT path
-   - Line 20-24: Batch file paths
-   - Line 27-59: Server configurations (ports, IPs, save dirs)
-   - Line 62-66: Player Steam IDs and names
+   ----------------
+   Required Settings:
+   - ARK_ROOT: Full path to ARK server (e.g., C:\\ARKServers\\ARKASE)
+   - BATCH_DIR: Where your batch files are stored
+   - CONFIG_DIR: GameUserSettings.ini location
+   - CLUSTER_DIR: Character transfer directory
+   
+   Server Configuration ($SERVERS array):
+   - name: Server session name
+   - map: Map name (Extinction, Fjordur, etc.)
+   - rcon_ip: RCON IP (usually 127.0.0.1)
+   - rcon_port: RCON port
+   - port: Game port
+   - query_port: Query port
+   - save_dir: Save directory name (e.g., ExtinctionSave)
+   - batch_file: Batch file identifier
+   
+   Player Mappings ($PLAYERS array):
+   - Add Steam IDs and player names for character transfers
 
 2. VERIFY PATHS:
-   All paths must use DOUBLE BACKSLASHES:
-   ✓ CORRECT: H:\\ARKServers\\ARKASE
-   ✗ WRONG:   G:\ARKServers\ARKASE
+   -------------
+   CRITICAL: All paths must use DOUBLE BACKSLASHES!
+   ✓ CORRECT: C:\\ARKServers\\ARKASE
+   ✗ WRONG:   C:\ARKServers\ARKASE
+   
+   Why? PHP treats single backslash as an escape character.
 
 3. RCON PASSWORD:
-   The manager reads ServerAdminPassword from GameUserSettings.ini
-   No need to enter it separately!
+   --------------
+   The manager automatically reads ServerAdminPassword from:
+   GameUserSettings.ini → [ServerSettings] → ServerAdminPassword
+   
+   No need to enter RCON password separately!
+   
+   Make sure your server launch parameters include:
+   - RCONEnabled=True
+   - RCONPort=27020 (or your port)
 
 4. BATCH FILES:
-   Move your startup batch files to:
-   H:\ARKServers\
+   ------------
+   Organize your server startup batch files in BATCH_DIR.
    
-   Example:
-   - start_extinction.bat
-   - start_fjordur.bat
+   Example structure:
+   C:\ARKServers\
+   ├── start_extinction.bat
+   ├── start_fjordur.bat
+   └── start_theisland.bat
+   
+   Each batch file should start the ARK server with all parameters.
 
-QUICK REFERENCE:
-----------------
+5. APACHE CONFIGURATION:
+   ---------------------
+   Add to httpd.conf:
+   
+   <Directory "H:/ark-manager">
+       Options -Indexes +FollowSymLinks
+       AllowOverride All
+       Require all granted
+   </Directory>
+   
+   Alias /ark-manager "H:/ark-manager"
+   
+   Then restart Apache:
+   net stop Apache2.4 && net start Apache2.4
 
-SERVER CONTROL:
-• Start Server    → Runs your batch file
-• Stop Server     → SaveWorld + DoExit (clean shutdown)
-• Restart Server  → Stop + Wait + Start
-• Force Kill      → Terminates process (use only if frozen)
+================================================================================
+FEATURE OVERVIEW
+================================================================================
+
+📊 DASHBOARD
+------------
+• Real-time server status display (Online/Offline)
+• Server information cards showing:
+  - Server name
+  - Port and RCON port
+  - Save directory
+  - Quick "Manage Server" button
+• Quick action buttons for common tasks
+• System information display
+
+🎛️ INI EDITOR
+-------------
+• Edit three main INI files:
+  - GameUserSettings.ini (server settings)
+  - Game.ini (game mechanics)
+  - Engine.ini (performance)
+• Automatic backup before every save
+• Syntax highlighting and line numbers
+• Direct save and restart options
+
+🔍 INI COMPARISON TOOL (INI Check)
+----------------------------------
+NEW IN v2.0!
+
+Analyze your server configuration files:
+• Current Settings: What's actually in your INI files
+• Available Settings: All possible settings you can use
+• Missing Settings: Settings you might want to add
+• Unknown Settings: Custom or client-only settings detected
+
+Each setting includes:
+• Description of what it does
+• Valid value ranges
+• Default values
+• Whether it's server-side or client-side
+
+Perfect for optimizing your server configuration!
+
+💻 SERVER CONTROL
+-----------------
+• Start Server: Launch using configured batch file
+• Stop Server: Graceful shutdown (SaveWorld + DoExit)
+• Restart Server: Stop → Wait → Start sequence
+• Force Kill: Emergency process termination (last resort)
+
+Status indicators:
+• 🟢 Online: Server is running
+• 🔴 Offline: Server is stopped
+• 🟡 Starting: Server is launching
+
+⌨️ RCON CONSOLE
+---------------
+Execute commands remotely on your ARK servers.
+
+Quick Action Buttons:
+• SaveWorld - Save game state
+• ListPlayers - Show online players
+• DestroyWildDinos - Respawn all wild dinos
+• Broadcast - Send server-wide message
+
+Common Manual Commands:
+• Broadcast <message> - Announce to all players
+• ServerChat <message> - Send chat message
+• SetTimeOfDay HH:MM:SS - Change time (e.g., 12:00:00)
+• DoExit - Graceful shutdown
+• KickPlayer <SteamID> - Remove player
+• BanPlayer <SteamID> - Ban player
+• SaveWorld - Manual save
+
+👥 CHARACTER TRANSFER
+---------------------
+Safely transfer player characters between maps/servers.
+
+CRITICAL STEPS:
+1. STOP BOTH servers (source and destination)
+2. Select source server
+3. Select destination server
+4. Check characters to transfer
+5. Click "Transfer Selected Characters"
+6. Wait for confirmation
+7. Start destination server
+
+Automatic Features:
+• Backups created before transfer
+• .arkprofile and .arktribe files transferred
+• Verification checks
+
+📁 FILE BROWSER (Files)
+-----------------------
+Navigate server files through web interface.
+
+Features:
+• Directory navigation like Windows Explorer
+• Edit supported files (.ini, .txt, .log, .cfg, .bat)
+• Automatic backup before saving
+• Delete files (moved to .deleted folder)
+• View file properties
+
+Supported Actions:
+• Edit - Open file in web editor
+• Delete - Remove file (backup created)
+• Download - Save file locally
+• Navigate - Browse directories
+
+⚙️ SCRIPT EXECUTOR (Scripts)
+----------------------------
+Run batch files and custom commands.
+
+Features:
+• List available batch files from BATCH_DIR
+• Execute batch files with one click
+• Enter custom commands
+• Real-time output display
+• Command history
+
+Useful for:
+• Running maintenance scripts
+• Custom server commands
+• Automated tasks
+• Backup scripts
+
+📋 LOG VIEWER (Logs)
+--------------------
+View server and manager logs in real-time.
+
+Log Types:
+• Server Logs: ARK server output
+• Manager Logs: Manager action history
+
+Features:
+• Auto-refresh every 5 seconds
+• Configurable line count (50-500 lines)
+• Search/filter functionality
+• Color-coded entries
+• Timestamp display
+
+📊 SYSTEM MONITOR (Monitor)
+---------------------------
+NEW IN v2.0!
+
+Comprehensive real-time system monitoring dashboard:
+
+CPU Monitor:
+• Usage percentage
+• Temperature (°C)
+
+Memory Monitor:
+• Usage percentage
+• Used / Total GB
+
+GPU Monitor:
+• Usage percentage
+• Temperature (°C)
+• Video memory usage
+
+Network Monitor:
+• Received KB/s
+• Sent KB/s
+
+Disk Usage:
+• All drives displayed
+• Usage percentage
+• Free / Total space
+
+Temperature Sensors:
+• CPU Package
+• GPU
+• Motherboard
+• Additional sensors
+
+Fan Speeds:
+• All system fans
+• RPM display
+
+System Uptime:
+• Days, hours, minutes
+
+ARK Server Processes:
+• Server name
+• Process ID (PID)
+• Memory usage (MB)
+• Server uptime
+
+⏰ Scheduled Restarts:
+• Configure restart days (Sunday-Saturday)
+• Set shutdown time
+• Set startup time
+• Weekly recurrence
+
+Controls:
+• Pause/Resume refresh
+• Adjust refresh interval (1-60 seconds)
+• Last update timestamp
+
+⚙️ MANAGER SETTINGS (Settings)
+------------------------------
+NEW IN v2.0!
+
+Configure core manager settings through the web interface.
+
+Configurable Settings:
+• ARK Server Root Directory
+• Backup Directory
+• Backup Date Format
+• Backup Filename Prefix
+
+View Current Configuration:
+• Config Directory
+• Saved Files Directory
+• Logs Directory
+• Cluster Directory
+
+Features:
+• Automatic backup before saving changes
+• Validation of directory paths
+• Direct link to edit config.php in File Browser
+• Admin-only access
+
+================================================================================
+QUICK REFERENCE COMMANDS
+================================================================================
 
 RCON COMMANDS:
-• SaveWorld              → Save current game state
-• ListPlayers            → Show connected players
-• DestroyWildDinos       → Respawn all wild dinos
-• Broadcast <msg>        → Announce to all players
-• ServerChat <msg>       → Send chat message
-• SetTimeOfDay HH:MM:SS  → Change time (e.g., 12:00:00)
-• DoExit                 → Graceful shutdown
-• KickPlayer <SteamID>   → Kick a player
-• BanPlayer <SteamID>    → Ban a player
-
-CHARACTER TRANSFER:
-1. Stop BOTH servers first
-2. Select source and target
-3. Check characters to transfer
-4. Click Transfer (backups auto-created)
-5. Start destination server
-
-FILE BROWSER:
-• Navigate like Windows Explorer
-• Edit .ini, .txt, .log, .cfg, .bat files
-• Backups created before saving
-• Delete creates backup in .deleted folder
-
-TROUBLESHOOTING:
-----------------
-
-Problem: RCON connection failed
-Fix:     - Check server is running
-         - Verify RCON port in config.php
-         - Check ServerAdminPassword in INI
-
-Problem: Can't start server
-Fix:     - Verify batch file path
-         - Check ARK executable exists
-         - Ensure no server already running
-
-Problem: Permission denied
-Fix:     - Run Apache as LocalSystem (default)
-         - Check folder permissions
-         - Use INSTALL.bat to set permissions
-
-Problem: exec() disabled
-Fix:     - Edit php.ini
-         - Remove exec, shell_exec from disable_functions
-         - Restart Apache
-
-Problem: Character transfer failed
-Fix:     - Stop both servers
-         - Check save directories exist
-         - Verify .arkprofile files exist
-         - Check target directory permissions
-
-FINDING STEAM IDS:
-------------------
-Look in your save directories:
-H:\ARKServers\ARKASE\ShooterGame\Saved\ExtinctionSave\
-
-Files like: 76561198012345678.arkprofile
-The number is the Steam ID!
-
-Add to config.php:
-$PLAYERS = [
-    '76561198012345678' => 'PlayerName1',
-];
-
-SECURITY TIPS:
 --------------
-✓ Use strong .htpasswd password
-✓ Only give access to trusted admins
-✓ Review logs regularly (logs/manager.log)
-✓ Backup INI files before editing
-✓ Test on backup server first
-✓ Consider using HTTPS in production
+Server Management:
+  SaveWorld                    Save current game state
+  DoExit                       Graceful server shutdown
+  ServerChat <message>         Send chat message
+  Broadcast <message>          Server-wide announcement
 
-FILE LOCATIONS:
----------------
-Web Files:        H:\ark-manager\
-ARK Server:       H:\ARKServers\ARKASE\
-Config Files:     H:\ARKServers\ARKASE\ShooterGame\Saved\Config\WindowsServer\
-Save Files:       H:\ARKServers\ARKASE\ShooterGame\Saved\[MapName]Save\
-Batch Files:      H:\ARKServers\batch\
-Manager Logs:     H:\ark-manager\logs\
-Server Logs:      H:\ARKServers\ARKASE\ShooterGame\Saved\Logs\
+Player Management:
+  ListPlayers                  Show connected players
+  KickPlayer <SteamID>         Remove player from server
+  BanPlayer <SteamID>          Ban player
+  UnbanPlayer <SteamID>        Unban player
+  AllowPlayerToJoinNoCheck <SteamID>  Whitelist player
 
-COMMON TASKS:
--------------
+Dino Management:
+  DestroyWildDinos             Respawn all wild dinosaurs
+  DestroyTribeIdDinos <ID>     Remove tribe's dinos
+  
+World Management:
+  SetTimeOfDay HH:MM:SS        Change time (e.g., 12:00:00)
+  CE <command>                 Execute cheat command
 
-Task: Change server settings
+Admin Commands (prefix with "cheat"):
+  cheat GiveItemNum <ID> <Qty> <Quality> <BP>  Give item
+  cheat GMBuff                 God mode + stats
+  cheat Fly                    Enable flying
+  cheat Walk                   Disable flying
+  cheat Ghost                  Noclip through objects
+  cheat GiveEngrams            Unlock all engrams
+  cheat SetBabyAge <0-1>       Set baby maturity
+
+WINDOWS COMMANDS:
+-----------------
+Apache:
+  net stop Apache2.4           Stop Apache
+  net start Apache2.4          Start Apache
+  net restart Apache2.4        Restart Apache
+
+File Permissions:
+  icacls "path" /grant "NT AUTHORITY\SYSTEM:(OI)(CI)F" /T
+
+Process Management:
+  tasklist | findstr ShooterGame  Find ARK processes
+  taskkill /F /IM ShooterGameServer.exe  Kill ARK server
+
+================================================================================
+COMMON TASKS & WORKFLOWS
+================================================================================
+
+TASK: Start Your Server
+-----------------------
+1. Go to Dashboard or Server Control
+2. Select your server
+3. Click "Start Server"
+4. Wait 30-60 seconds for startup
+5. Verify status changes to 🟢 Online
+
+TASK: Stop Your Server Safely
+------------------------------
+1. Go to Server Control
+2. Select your server
+3. Click "Stop Server" (NOT Force Kill)
+4. Wait for graceful shutdown
+5. Verify status changes to 🔴 Offline
+
+TASK: Change Server Settings
+-----------------------------
 1. Go to INI Editor
 2. Select GameUserSettings.ini
-3. Edit settings
-4. Save (backup created)
-5. Restart server
+3. Find and modify settings
+4. Click "Save" (backup created automatically)
+5. Go to Server Control
+6. Restart server for changes to take effect
 
-Task: Wipe wild dinos
-1. Go to RCON
-2. Type: DestroyWildDinos
-3. Wait for message
+TASK: Optimize Your Configuration
+----------------------------------
+1. Go to INI Check (INI Comparison)
+2. Select an INI file to analyze
+3. Review "Missing Settings" section
+4. Note settings that would benefit your server
+5. Go to INI Editor
+6. Add desired settings
+7. Save and restart server
 
-Task: Broadcast message
-1. Go to RCON
-2. Type: Broadcast Your message here
-3. All players will see it
+TASK: Wipe Wild Dinosaurs
+--------------------------
+1. Go to RCON Console
+2. Select your server
+3. Type: DestroyWildDinos
+4. Press Enter or click "Execute"
+5. Wait for "Destroyed wild dinos" message
 
-Task: Emergency shutdown
-1. Go to Server Control
-2. Click "Force Kill" if server frozen
-3. Or use Stop Server for clean shutdown
+TASK: Broadcast Message to Players
+-----------------------------------
+1. Go to RCON Console
+2. Select your server
+3. Type: Broadcast Your message here
+4. Press Enter
+5. All online players will see it
 
-Task: View recent activity
-1. Go to Log Viewer
+TASK: Transfer Character Between Servers
+-----------------------------------------
+1. STOP BOTH source and destination servers
+2. Go to Characters (Character Transfer)
+3. Select source server from dropdown
+4. Select destination server
+5. Check the character(s) to transfer
+6. Click "Transfer Selected Characters"
+7. Wait for "Transfer successful" message
+8. Start destination server
+9. Player can now join with transferred character
+
+TASK: View Server Performance
+------------------------------
+1. Go to Monitor (System Monitor)
+2. Check CPU usage and temperature
+3. Check Memory usage
+4. Monitor ARK Server Processes section
+5. Adjust refresh interval if needed
+6. Use data to optimize server settings
+
+TASK: Schedule Automatic Restarts
+----------------------------------
+1. Go to Monitor (System Monitor)
+2. Scroll to "Scheduled Restart Times"
+3. Select restart days (e.g., Sunday, Wednesday)
+4. Set shutdown time (e.g., 6:30 AM)
+5. Set startup time (e.g., 8:30 AM)
+6. Click "Save Schedule"
+7. Server will automatically restart on selected days
+
+TASK: Edit Server Files Directly
+---------------------------------
+1. Go to Files (File Browser)
+2. Navigate to desired directory
+3. Click "Edit" on the file
+4. Make changes in web editor
+5. Click "Save" (backup created)
+6. Restart server if needed
+
+TASK: Run Custom Maintenance Script
+------------------------------------
+1. Place your .bat file in BATCH_DIR
+2. Go to Scripts (Script Executor)
+3. Find your script in the list
+4. Click "Run Script"
+5. View real-time output
+6. Wait for completion
+
+TASK: Review Manager Activity
+------------------------------
+1. Go to Logs (Log Viewer)
 2. Select "Manager Actions Log"
-3. See who did what and when
+3. Set lines to display (e.g., 200)
+4. Use search to filter by action
+5. Review who did what and when
 
-MAINTENANCE:
+TASK: Emergency Server Shutdown
+--------------------------------
+1. Go to Server Control
+2. Select frozen server
+3. Click "Force Kill"
+4. Wait a few seconds
+5. Verify process is terminated
+6. Restart server when ready
+
+================================================================================
+TROUBLESHOOTING GUIDE
+================================================================================
+
+PROBLEM: Can't Access Manager (Login Fails)
+--------------------------------------------
+Fix:
+• Verify .htpasswd file exists: H:\ark-manager\.htpasswd
+• Try recreating password:
+  htpasswd -c H:\ark-manager\.htpasswd admin
+• Check Apache error logs
+• Ensure .htaccess is configured correctly
+
+PROBLEM: RCON Connection Failed
+--------------------------------
+Fix:
+1. Verify server is running (check Dashboard)
+2. Check RCON port in config.php matches server
+3. Ensure server launch parameters include:
+   - RCONEnabled=True
+   - RCONPort=27020
+4. Check ServerAdminPassword is set in GameUserSettings.ini
+5. Verify firewall isn't blocking RCON port
+6. Test RCON with external tool (RCON CLI)
+
+PROBLEM: Can't Start Server
+----------------------------
+Fix:
+1. Verify batch file exists at configured path
+2. Check batch file has correct executable path
+3. Ensure no server instance is already running:
+   tasklist | findstr ShooterGame
+4. If found, use Force Kill first
+5. Check server logs for startup errors
+6. Verify ARK server files aren't corrupted
+7. Check available disk space
+
+PROBLEM: exec() Function Not Working
+-------------------------------------
+Fix:
+1. Locate php.ini: php -i | findstr php.ini
+2. Open php.ini in text editor
+3. Find: disable_functions =
+4. Remove: exec, shell_exec, proc_open, popen
+5. Save php.ini
+6. Restart Apache: net restart Apache2.4
+7. Verify: php -r "var_dump(function_exists('exec'));"
+
+PROBLEM: Permission Denied Errors
+----------------------------------
+Fix:
+1. Run install.bat as Administrator
+2. Manually set permissions:
+   icacls "H:\ark-manager" /grant "NT AUTHORITY\SYSTEM:(OI)(CI)F" /T
+   icacls "C:\ARKServers" /grant "NT AUTHORITY\SYSTEM:(OI)(CI)F" /T
+3. Ensure Apache runs as LocalSystem (default)
+4. Check folder ownership
+5. Verify paths in config.php are correct
+
+PROBLEM: Character Transfer Failed
+-----------------------------------
+Fix:
+1. CRITICAL: Stop BOTH servers first
+2. Check save directories exist:
+   - Source: C:\ARKServers\ARKASE\ShooterGame\Saved\ExtinctionSave
+   - Target: C:\ARKServers\ARKASE\ShooterGame\Saved\FjordurSave
+3. Verify .arkprofile files exist in source
+4. Check .arktribe files exist for tribes
+5. Ensure write permissions on target directory
+6. Review manager logs for specific error
+7. Check cluster directory is accessible
+
+PROBLEM: File Not Found Errors
+-------------------------------
+Fix:
+1. Check all paths in config.php use double backslashes
+2. Verify drive letters are correct (C:\ vs H:\)
+3. Ensure directories actually exist
+4. Use absolute paths, not relative
+5. Check for typos in config.php
+6. Use Manager Settings to verify paths
+
+PROBLEM: INI Changes Not Taking Effect
+---------------------------------------
+Fix:
+1. Verify you edited the correct INI file
+2. Check the file was actually saved (check timestamp)
+3. Restart the server (changes require restart)
+4. Check for syntax errors in INI file
+5. Some settings require server restart AND client restart
+6. Verify setting is in correct [Section]
+
+PROBLEM: System Monitor Shows No Data
+--------------------------------------
+Fix:
+1. Ensure you're on Windows (System Monitor is Windows-only)
+2. Check WMI service is running:
+   net start winmgmt
+3. Verify PHP can execute system commands
+4. Check Windows Event Viewer for WMI errors
+5. Restart WMI service:
+   net stop winmgmt && net start winmgmt
+6. Install hardware monitoring tools if needed
+
+PROBLEM: Logs Not Updating
+---------------------------
+Fix:
+1. Check auto-refresh is enabled (not paused)
+2. Verify log directory exists and has write permissions
+3. Check Apache has access to log directories
+4. Ensure sufficient disk space
+5. Review Apache error logs
+6. Try manual refresh (F5)
+
+PROBLEM: Scheduled Restarts Not Working
+----------------------------------------
+Fix:
+1. Verify restart schedule is saved in Monitor
+2. Check Windows Task Scheduler for created tasks
+3. Ensure system time/date is correct
+4. Verify batch files are accessible
+5. Check manager logs for scheduling errors
+6. Test batch files manually first
+
+================================================================================
+FINDING STEAM IDS
+================================================================================
+
+METHOD 1: From Save Files
+--------------------------
+1. Navigate to your save directory:
+   C:\ARKServers\ARKASE\ShooterGame\Saved\ExtinctionSave\
+   
+2. Look for files like: 76561198012345678.arkprofile
+   
+3. The number IS the Steam ID!
+
+4. Add to config.php:
+   $PLAYERS = [
+       '76561198012345678' => 'PlayerName',
+   ];
+
+METHOD 2: From Steam Profile
+-----------------------------
+1. Open Steam
+2. View player's profile
+3. Copy profile URL
+4. Steam ID is the number in the URL:
+   steamcommunity.com/profiles/76561198012345678/
+
+METHOD 3: Use SteamID.io
+-------------------------
+1. Go to https://steamid.io/
+2. Enter player's Steam profile URL or name
+3. Copy the steamID64 value
+
+================================================================================
+SECURITY BEST PRACTICES
+================================================================================
+
+AUTHENTICATION:
+---------------
+✓ Use strong .htpasswd passwords (12+ characters)
+✓ Different password for each admin user
+✓ Only give access to trusted administrators
+✓ Change passwords regularly (every 90 days)
+✓ Log out when finished (don't stay logged in)
+
+NETWORK SECURITY:
+-----------------
+✓ Use HTTPS in production (SSL certificate required)
+✓ Restrict access by IP if possible
+✓ Use VPN for remote administration
+✓ Don't expose RCON ports to internet
+✓ Keep Apache and PHP updated
+✓ Use non-default ports for added security
+
+FILE SECURITY:
+--------------
+✓ Review logs/manager.log regularly for suspicious activity
+✓ Keep automatic backups enabled
+✓ Backup config.php before making changes
+✓ Limit File Browser access to necessary directories
+✓ Clean old backup files periodically
+✓ Never share your .htpasswd file
+
+SERVER SECURITY:
+----------------
+✓ Use strong ServerAdminPassword
+✓ Use strong ServerPassword (if private server)
+✓ Keep ARK server updated to latest version
+✓ Monitor server logs for hack attempts
+✓ Use BattlEye anti-cheat if supported
+✓ Regularly check for unauthorized admin users
+
+ACCESS CONTROL:
+---------------
+✓ Use Admin role only for trusted administrators
+✓ Use Moderator role for limited access users
+✓ Review user roles regularly
+✓ Remove access for inactive users
+✓ Log all administrative actions
+
+BACKUP STRATEGY:
+----------------
+✓ Daily: Character files and save files
+✓ Weekly: Full ARK server directory
+✓ Monthly: Complete system backup
+✓ Before Updates: Everything
+✓ Store backups off-server (external drive/cloud)
+
+================================================================================
+PERFORMANCE OPTIMIZATION
+================================================================================
+
+MANAGER PERFORMANCE:
+--------------------
+• Pause System Monitor when not actively viewing
+• Limit log viewer to 100-200 lines
+• Close unused browser tabs
+• Clear browser cache periodically
+• Use modern browser (Chrome, Firefox, Edge)
+
+SERVER PERFORMANCE:
+-------------------
+• Monitor RAM usage - ARK needs 8-16GB
+• Use SSD for save files (faster I/O)
+• Schedule regular SaveWorld via RCON
+• Configure appropriate player limits
+• Adjust taming/harvest rates for balance
+• Use DestroyWildDinos weekly to prevent dino overflow
+
+SYSTEM OPTIMIZATION:
+--------------------
+• Keep Windows updated
+• Update graphics drivers
+• Close unnecessary background applications
+• Monitor CPU temperature
+• Ensure adequate cooling
+• Defragment hard drives (not SSDs)
+
+INI OPTIMIZATION:
+-----------------
+• Use INI Comparison tool to find missing settings
+• Adjust rates based on server population
+• Balance XP and harvest rates
+• Configure breeding rates for your playstyle
+• Set appropriate structure limits
+• Review and remove unused custom settings
+
+================================================================================
+FILE LOCATIONS REFERENCE
+================================================================================
+
+MANAGER FILES:
+--------------
+Web Files:          H:\ark-manager\
+Config:             H:\ark-manager\config.php
+Authentication:     H:\ark-manager\.htpasswd
+Manager Logs:       H:\ark-manager\logs\manager.log
+Assets:             H:\ark-manager\assets\
+
+ARK SERVER FILES:
+-----------------
+Server Root:        C:\ARKServers\ARKASE\
+Executable:         C:\ARKServers\ARKASE\ShooterGame\Binaries\Win64\
+Config Files:       C:\ARKServers\ARKASE\ShooterGame\Saved\Config\WindowsServer\
+Save Files:         C:\ARKServers\ARKASE\ShooterGame\Saved\[MapName]Save\
+Server Logs:        C:\ARKServers\ARKASE\ShooterGame\Saved\Logs\
+Cluster:            C:\ARKServers\
+
+BATCH FILES:
 ------------
-Daily:    Check server status
-Weekly:   Review logs for errors
-Monthly:  Backup INI files
-Before Updates: Full backup of ARK directory
+Batch Directory:    C:\ARKServers\
+Start Scripts:      C:\ARKServers\start_*.bat
+
+BACKUPS:
+--------
+INI Backups:        C:\ARKServers\ARKASE\ShooterGame\Saved\Config\WindowsServer\.backups\
+Character Backups:  C:\ARKServers\.backups\
+Deleted Files:      (original location)\.deleted\
+
+================================================================================
+USEFUL RESOURCES
+================================================================================
+
+DOCUMENTATION:
+--------------
+• Full README.md - Comprehensive documentation
+• This quick_start.txt - Quick reference
+• config.php comments - Configuration details
+
+ARK RESOURCES:
+--------------
+• Official ARK Wiki: ark.wiki.gg
+• ARK Server Settings: ark.fandom.com/wiki/Server_configuration
+• Steam Community: steamcommunity.com/app/346110
+
+TOOLS:
+------
+• ARK Server Manager (ASM): arkservermanager.freeforums.net
+• Beacon - Server config tool: beacon-app.cc
+• RCON CLI Tools: github.com/gorcon/rcon-cli
 
 SUPPORT:
 --------
-Check README.md for detailed documentation
-Review logs at: H:\ark-manager\logs\manager.log
+• MorteArkManager GitHub: github.com/XxNeroMortexX/MorteArkManager
+• ARK Official Discord: discord.gg/playark
+• ARK Subreddit: reddit.com/r/playark
 
 ================================================================================
-ENJOY YOUR ARK SERVER MANAGEMENT!
+MAINTENANCE CHECKLIST
+================================================================================
+
+DAILY:
+------
+☐ Check server status (Dashboard)
+☐ Review online player count
+☐ Monitor system resources (CPU, RAM)
+☐ Backup character files
+
+WEEKLY:
+-------
+☐ Review manager logs for issues
+☐ Run DestroyWildDinos (dino cleanup)
+☐ Check disk space
+☐ Backup save files
+☐ Review server performance
+
+MONTHLY:
+--------
+☐ Full ARK server backup
+☐ Clean old backup files
+☐ Review and optimize INI settings using INI Check
+☐ Update Apache and PHP if needed
+☐ Change admin passwords
+☐ Check for ARK server updates
+
+BEFORE UPDATES:
+---------------
+☐ Full backup of everything
+☐ Backup all INI files separately
+☐ Note current server version
+☐ Announce update to players
+☐ Schedule during low-activity time
+
+AFTER UPDATES:
+--------------
+☐ Verify server starts correctly
+☐ Test RCON connection
+☐ Check all manager features work
+☐ Verify players can connect
+☐ Monitor for issues first hour
+☐ Review update changelog
+
+================================================================================
+SUPPORT & FEEDBACK
+================================================================================
+
+If you need help:
+1. Check this quick_start.txt thoroughly
+2. Review README.md for detailed info
+3. Check manager logs: H:\ark-manager\logs\manager.log
+4. Check server logs via Log Viewer
+5. Search ARK Wiki for server-specific issues
+
+Report Issues:
+• GitHub: github.com/XxNeroMortexX/MorteArkManager/issues
+• Include: Manager version, PHP version, error messages, logs
+
+Contribute:
+• Submit bug fixes or features via GitHub pull requests
+• Share your config optimizations with the community
+• Help other users in discussions
+
+================================================================================
+                          🦖 HAPPY ARK MANAGING! 🦖
+================================================================================
+
+Version: 2.0
+Last Updated: January 2025
+Created by: XxNeroMortexX
+GitHub: github.com/XxNeroMortexX/MorteArkManager
+
 ================================================================================
